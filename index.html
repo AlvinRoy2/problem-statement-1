@@ -158,13 +158,7 @@ h1, h2, h3, .cinzel { font-family: 'Cinzel', serif; }
       <h1 class="cinzel" style="font-size:clamp(2.5rem,5vw,4rem); color:var(--gold); margin-bottom:0.5rem; text-shadow:0 0 20px rgba(212,175,55,0.3);">MILLIONAIRE 2026</h1>
       <p style="font-size:1.25rem; color:var(--text-dim); letter-spacing:0.1em; margin-bottom:3rem;">Assisted by Gemini AI and Created by Antigravity</p>
 
-      <div id="fallback-api-container" style="background:var(--surface); padding:1.5rem; border:2px solid var(--gold); border-radius:8px; margin-bottom:2rem; display:none; flex-direction:column; gap:0.75rem; align-items:center; box-shadow:0 0 30px rgba(212,175,55,0.15);">
-        <p style="color:var(--gold); font-size:0.9rem; font-weight:600; margin:0; font-family:'Rajdhani', sans-serif; letter-spacing:0.05em;">LOCAL FILE ACCESS BLOCKED .ENV — MANUAL KEY REQUIRED</p>
-        <div style="display:flex; gap:1rem; width:100%; justify-content:center;">
-          <input type="password" id="fallback-api-input" placeholder="Paste Gemini API Key here..." style="background:var(--surface2); border:1px solid var(--gold-dim); color:var(--text); padding:0.75rem 1rem; border-radius:4px; font-family:monospace; width:300px; font-size:1rem;">
-          <button id="btn-save-fallback" style="background:var(--gold); color:var(--bg); border:none; padding:0.75rem 1.5rem; border-radius:4px; cursor:pointer; font-weight:700; font-size:0.9rem; font-family:'Rajdhani', sans-serif;">Save</button>
-        </div>
-      </div>
+      <!-- API Key pre-loaded -->
 
       <div style="display:flex; gap:1rem; margin-bottom:2rem; flex-wrap:wrap; justify-content:center;">
         <span style="background:var(--surface); border:1px solid var(--surface2); padding:0.5rem 1rem; border-radius:20px; font-size:0.9rem; color:var(--text-dim);">AI Debate</span>
@@ -288,6 +282,7 @@ h1, h2, h3, .cinzel { font-family: 'Cinzel', serif; }
       ],
       SAFE_HAVENS: new Set([4, 9]), // Safe at £1k and £32k
       LETTERS: ['A','B','C','D'],
+      GEMINI_KEY: 'AIzaSyAOWZaXR3-yiYm9ZYI0vMJ_dzB4Tg9cMs4',
       GEMINI_ENDPOINT: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',
     });
 
@@ -450,7 +445,7 @@ h1, h2, h3, .cinzel { font-family: 'Cinzel', serif; }
     };
 
     const GeminiService = {
-      _key: null,
+      _key: CONFIG.GEMINI_KEY,
       setKey(k) { this._key = (k && k.trim() !== '') ? k.trim() : null; },
       hasKey() { return !!this._key; },
       async _call(prompt, temperature = 0.3, maxTokens = 200) {
@@ -864,53 +859,14 @@ REQUIREMENTS:
         A11y.init(); 
         this.bindEvents();
         
-        // Attempt to auto-load .env if available
-        this.tryLoadEnv();
-
         if (new URLSearchParams(window.location.search).get('test') === 'true') { 
           TestSuite.display(); 
         }
       },
       
-      async tryLoadEnv() {
-        try {
-          const response = await fetch('.env');
-          if (!response.ok) return;
-          
-          const text = await response.text();
-          const match = text.match(/GEMINI_API_KEY\s*=\s*([^\s#]+)/);
-          
-          if (match && match[1] && match[1] !== 'YOUR_API_KEY_HERE') {
-            const key = match[1].trim();
-            GeminiService.setKey(key);
-            console.log("Gemini API Key auto-loaded from .env");
-          } else {
-            // Found the file but the key placeholder wasn't replaced yet
-            UI.els['fallback-api-container'].style.display = 'flex';
-          }
-        } catch (e) {
-          // If fetch fails (CORS or file:// restriction), show the fallback input
-          UI.els['fallback-api-container'].style.display = 'flex';
-        }
-      },
-
       bindEvents() {
         UI.els['btn-start'].addEventListener('click', () => {
-          if (!GeminiService.hasKey()) { 
-            UI.showToast("⚠️ Please enter your API Key first");
-            UI.els['fallback-api-container'].style.display = 'flex';
-            A11y.announce("API Key required but not found. Please enter it manually in the revealed input field.");
-            return; 
-          }
           this.startGame();
-        });
-        UI.els['btn-save-fallback'].addEventListener('click', () => {
-          const val = UI.els['fallback-api-input'].value.trim();
-          if (val) {
-            GeminiService.setKey(val);
-            UI.els['fallback-api-container'].style.display = 'none';
-            UI.showToast("✓ Key Loaded Successfully!");
-          }
         });
         UI.els['btn-play-again'].addEventListener('click', () => { A11y.releaseFocus(UI.els['screen-result']); UI.showScreen('screen-start'); });
         UI.els['btn-walk'].addEventListener('click', () => this.walkAway());
