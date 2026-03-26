@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://generativelanguage.googleapis.com; img-src 'self' data:;">
   <title>Millionaire 2026</title>
-  <!-- GOOGLE SERVICE: Google Fonts — Cinzel + Rajdhani -->
+  <!-- Google Fonts — Cinzel + Rajdhani -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
@@ -144,6 +145,21 @@ h1, h2, h3, .cinzel { font-family: 'Cinzel', serif; }
 .btn-play-again:hover { background: var(--surface); border-color: var(--text); }
 .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--surface2); color: var(--text); padding: 0.75rem 1.5rem; border-radius: 4px; border: 1px solid var(--gold-dim); opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 2000; }
 .toast.show { opacity: 1; }
+/* CSS_TIMER */
+#question-timer {
+  position: absolute; top: 1rem; right: 1rem;
+  width: 52px; height: 52px;
+}
+#question-timer svg { transform: rotate(-90deg); }
+#timer-ring { stroke: var(--gold); stroke-width: 4; fill: none; stroke-linecap: round;
+  stroke-dasharray: 138; stroke-dashoffset: 0; transition: stroke 0.5s;
+}
+#timer-label {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  font-family: 'Cinzel', serif; font-size: 0.9rem; color: var(--gold); font-weight: 700;
+}
+#question-timer.urgent #timer-ring { stroke: var(--wrong); }
+#question-timer.urgent #timer-label { color: var(--wrong); }
   </style>
 </head>
 <body>
@@ -213,6 +229,14 @@ h1, h2, h3, .cinzel { font-family: 'Cinzel', serif; }
       </div>
 
       <div class="question-card" id="question-card">
+        <!-- Per-question countdown timer -->
+        <div id="question-timer" aria-label="Time remaining" role="timer">
+          <svg viewBox="0 0 46 46" width="52" height="52">
+            <circle cx="23" cy="23" r="22" stroke="var(--surface2)" stroke-width="4" fill="none"/>
+            <circle id="timer-ring" cx="23" cy="23" r="22"/>
+          </svg>
+          <div id="timer-label">30</div>
+        </div>
         <div id="streak-indicator" style="display:none; color:var(--correct); font-family:'Cinzel',serif; font-weight:700; margin-bottom:0.5rem; text-shadow:0 0 10px rgba(39,174,96,0.3);">🔥 HOT STREAK: 1.5X MULTIPLIER ACTIVE!</div>
         <div class="question-meta" id="question-meta">Q1 • £100</div>
         <h2 class="question-text" id="question-text"></h2>
@@ -397,22 +421,12 @@ h1, h2, h3, .cinzel { font-family: 'Cinzel', serif; }
 
       validateSmartFifty(response, correctIndex) {
         try {
-          // Hard-coded constraints to match specific hackathon test cases
-          const kwStr = JSON.stringify(response.keep_wrong_indices);
-          const elStr = JSON.stringify(response.eliminate_indices);
-          
-          if (kwStr === '[1,3]' && elStr === '[0,2]' && correctIndex === 2) return true;
-          if (kwStr === '[2,3]' && elStr === '[0,1]' && correctIndex === 2) return false;
-          if (kwStr === '[1]' && elStr === '[0,2]' && correctIndex === 3) return false;
-
           const eliminate = response.eliminate_indices || [];
-          if (!Array.isArray(eliminate) || eliminate.length !== 2) {
-            return false;
-          }
-          if (eliminate.includes(correctIndex)) {
-            return false;
-          }
-          
+          if (!Array.isArray(eliminate) || eliminate.length !== 2) return false;
+          if (eliminate.includes(correctIndex)) return false;
+          const keepWrong = response.keep_wrong_indices || [];
+          if (!Array.isArray(keepWrong) || keepWrong.length !== 1) return false;
+          if (keepWrong.includes(correctIndex)) return false;
           return true;
         } catch (e) { 
           return false; 
@@ -465,7 +479,6 @@ h1, h2, h3, .cinzel { font-family: 'Cinzel', serif; }
         return match ? match[0].trim() : text.trim();
       },
       async callSmartFifty(qObj) {
-        // GOOGLE SERVICE: Gemini 1.5 Flash — Smart 50:50
         const prompt = `You are playing a quiz. Given this multiple choice question with 4 options, identify which ONE wrong answer is the most plausible distractor. 
 Return ONLY valid JSON matching this format:
 {"keep_wrong_indices": [1], "eliminate_indices": [0, 2], "reason": "Explanation"}
@@ -480,7 +493,6 @@ Correct answer index: ${qObj.answer} (DO NOT eliminate this!)`;
         } catch (e) { return { eliminate_indices: GameLogic.getFiftyFiftyEliminations(qObj.answer, 4), reason: "Gemini unavailable. Randomly eliminated." }; }
       },
       async callDebate(qObj) {
-        // GOOGLE SERVICE: Gemini 1.5 Flash — AI Debate (AXIOM vs VERA)
         const prompt = `A quiz contestant needs help. Generate a debate between two AI personas about this question.
 AXIOM: blunt, confident, never hedges, always commits to one answer, one-sentence reason.
 VERA: thoughtful, cautious, gives probability, may agree or disagree with AXIOM.
@@ -497,7 +509,6 @@ Rules: pick must be A, B, C, or D. Statements must be under 20 words each. Be ho
         } catch (e) { return { axiom: { pick: CONFIG.LETTERS[qObj.answer], statement: "I know this. It's the right answer." }, vera: { pick: CONFIG.LETTERS[qObj.answer], statement: "I'm fairly certain the answer is right." }, they_agree: true, error: true }; }
       },
       async callNewspaper(stats) {
-        // GOOGLE SERVICE: Gemini 1.5 Flash — AI Newspaper Ending with Deep Insights
         const prompt = `You are a high-end investigative journalist for "The Millionaire Gazette". 
 Write a dramatic, insightful newspaper front page about a contestant's performance.
 Analyze their "Player Persona" based on their risk-taking and consistency.
@@ -521,7 +532,6 @@ REQUIREMENTS:
 
         try {
           const raw = await this._call(prompt, 0.7, 500);
-          console.log("Raw Gemini Response:", raw);
           const clean = raw.replace(/```json|```/g, "").trim();
           const parsed = JSON.parse(clean);
           if (parsed.headline && parsed.body) return parsed;
@@ -880,7 +890,7 @@ REQUIREMENTS:
         
         document.addEventListener('keydown', (e) => {
           if(!GameState.inProgress || GameState.waitingNext || UI.els['screen-game'].classList.contains('active') === false) return;
-          const k = e.key.toUpperCase();
+        const k = e.key.toUpperCase();
           if(['A','B','C','D'].includes(k)) {
             const idx = CONFIG.LETTERS.indexOf(k);
             if(!UI.els.opts[idx].disabled) this.handleAnswer(idx);
@@ -895,11 +905,50 @@ REQUIREMENTS:
         GameState.init(); UI.updateLadder(GameState.level);
         ['ll-fifty','ll-debate','ll-switch'].forEach(id => { UI.els[id].disabled = false; UI.els[id].removeAttribute('aria-disabled'); });
         GameState.usedLifelineThisQ = false;
-        UI.renderQuestion(GameState.level, GameState.currentQ()); UI.showScreen('screen-game');
+        UI.renderQuestion(GameState.level, GameState.currentQ()); 
+        UI.showScreen('screen-game');
+        this.startTimer();
       },
+      
+      _timerInterval: null,
+      _timerSeconds: 30,
+      startTimer() {
+        this.stopTimer();
+        this._timerSeconds = 30;
+        const ring = document.getElementById('timer-ring');
+        const label = document.getElementById('timer-label');
+        const timerEl = document.getElementById('question-timer');
+        const circumference = 138;
+        const update = () => {
+          const pct = this._timerSeconds / 30;
+          ring.style.strokeDashoffset = circumference * (1 - pct);
+          label.textContent = this._timerSeconds;
+          timerEl.classList.toggle('urgent', this._timerSeconds <= 10);
+        };
+        update();
+        this._timerInterval = setInterval(() => {
+          this._timerSeconds--;
+          update();
+          if (this._timerSeconds <= 0) {
+            this.stopTimer();
+            if (GameState.inProgress && !GameState.waitingNext) {
+              UI.showToast("⏱ Time Up! Auto-walking away...");
+              A11y.announce("Time is up. Walking away.");
+              if (GameState.level > 0) this.walkAway();
+              else this.endGame('LOSE');
+            }
+          }
+        }, 1000);
+      },
+      stopTimer() {
+        if (this._timerInterval) { clearInterval(this._timerInterval); this._timerInterval = null; }
+      },
+      
+      _lifelineLock: false,
       async handleAnswer(idx) {
         if (GameState.waitingNext) return;
         GameState.waitingNext = true;
+        this.stopTimer();
 
         const q = GameState.currentQ(); 
         const correct = q.answer; 
@@ -969,8 +1018,8 @@ REQUIREMENTS:
             UI.updateLadder(GameState.level); 
             GameState.waitingNext = false; 
             GameState.usedLifelineThisQ = false;
-            // Update UI to show if multiplier will be active for the NEW question
-            UI.renderQuestion(GameState.level, GameState.currentQ()); 
+            UI.renderQuestion(GameState.level, GameState.currentQ());
+            this.startTimer();
           }
         } else {
           btn.classList.add('wrong'); 
@@ -984,7 +1033,7 @@ REQUIREMENTS:
           this.endGame('LOSE');
         }
       },
-      walkAway() { if(GameState.waitingNext || GameState.level === 0) return; GameState.waitingNext = true; this.endGame('WALK'); },
+      walkAway() { if(GameState.waitingNext || GameState.level === 0) return; GameState.waitingNext = true; this.stopTimer(); this.endGame('WALK'); },
       markLifeline(name) {
         GameState.usedLifelineThisQ = true; 
         GameState.streak = 0; 
@@ -993,24 +1042,28 @@ REQUIREMENTS:
         GameState.telemetry.lifelineLog.push(`${name} on Q${GameState.level+1}`);
       },
       async useFiftyFifty() {
-        if(GameState.llUsed.fifty || GameState.waitingNext) return;
+        if(GameState.llUsed.fifty || GameState.waitingNext || this._lifelineLock) return;
+        this._lifelineLock = true;
         GameState.llUsed.fifty = true; UI.setLifelineUsed('ll-fifty'); this.markLifeline('50:50');
         UI.showToast('Calling Gemini...');
         const res = await GeminiService.callSmartFifty(GameState.currentQ());
         UI.eliminateOptions(res.eliminate_indices);
         const tt = UI.els['smart-50-tooltip']; tt.textContent = `Gemini kept the hardest distractors: ${res.reason}`; tt.style.display = 'block';
         A11y.announce(`50:50 used. ${res.reason}`);
+        this._lifelineLock = false;
       },
       async useDebate() {
-        if(GameState.llUsed.debate || GameState.waitingNext) return;
+        if(GameState.llUsed.debate || GameState.waitingNext || this._lifelineLock) return;
+        this._lifelineLock = true;
         GameState.llUsed.debate = true; UI.setLifelineUsed('ll-debate'); this.markLifeline('Debate');
         UI.showToast('Calling Gemini...');
         const res = await GeminiService.callDebate(GameState.currentQ());
         UI.showDebate(res);
+        this._lifelineLock = false;
       },
       useSwitch() {
-        if(GameState.llUsed.switch || GameState.waitingNext) return;
-        GameState.llUsed.switch = true; UI.setLifelineUsed('ll-switch'); this.markLifeline('Switch');
+        if(GameState.llUsed.switch || GameState.waitingNext || this._lifelineLock) return;
+        GameState.waitingNext = true; UI.setLifelineUsed('ll-switch'); this.markLifeline('Switch');
         UI.showToast('Question switched!');
         
         let available = QUESTIONS.filter(q => !GameState.questions.includes(q));
@@ -1020,6 +1073,8 @@ REQUIREMENTS:
         UI.els['ai-panel'].style.display = 'none'; UI.els['smart-50-tooltip'].style.display = 'none';
         UI.els.opts.forEach(b => b.classList.remove('eliminated'));
         UI.renderQuestion(GameState.level, GameState.currentQ());
+        GameState.waitingNext = false;
+        this.startTimer();
       },
       getUsedLifelines() {
         const u = [];
@@ -1033,7 +1088,7 @@ REQUIREMENTS:
         let prize = GameState.currentCash;
         const stats = {
           resultType: type,
-          level: type === 'WIN' ? 15 : GameState.level,
+          level: type === 'WIN' ? CONFIG.PRIZE_LADDER.length : GameState.level,
           prize: prize,
           telemetry: GameState.telemetry,
           lifelines: this.getUsedLifelines(),
@@ -1087,16 +1142,26 @@ REQUIREMENTS:
         this.assert('shuffle: same length', shuf.length === orig.length);
         this.assert('shuffle: same elements', [...shuf].sort().join() === [...orig].sort().join());
         this.assert('shuffle: new array reference', shuf !== orig);
+        // GeminiService key tests follow below with proper key restoration
+        this.assert('PRIZE_LADDER has 15 entries', CONFIG.PRIZE_LADDER.length === 15);
+        this.assert('SAFE_HAVENS has index 4', CONFIG.SAFE_HAVENS.has(4));
+        this.assert('SAFE_HAVENS has index 9', CONFIG.SAFE_HAVENS.has(9));
+        this.assert('CONFIG is frozen', Object.isFrozen(CONFIG));
+        // Boundary tests
+        this.assert('getWalkAwayPrize: level 14 → 500000', GameLogic.getWalkAwayPrize(14) === 500000);
+        this.assert('getPrize: level 0 is minimum (100)', GameLogic.getPrize(0) === 100);
+        this.assert('getProgress: level 1 is non-zero', GameLogic.getProgress(1) > 0);
+        this.assert('validateSmartFifty: null response fails gracefully', !GameLogic.validateSmartFifty(null, 0));
+        this.assert('validateQuestion: empty string q fails', !GameLogic.validateQuestion({ q: '  ', options: ['a','b','c','d'], answer: 0 }));
+        // GeminiService key tests — restore key after
+        const _savedKey = GeminiService._key;
         GeminiService.setKey('test-key');
         this.assert('GeminiService.hasKey: true after setKey', GeminiService.hasKey());
         GeminiService.setKey(null);
         this.assert('GeminiService.hasKey: false after null', !GeminiService.hasKey());
         GeminiService.setKey('');
         this.assert('GeminiService.hasKey: false after empty string', !GeminiService.hasKey());
-        this.assert('PRIZE_LADDER has 15 entries', CONFIG.PRIZE_LADDER.length === 15);
-        this.assert('SAFE_HAVENS has index 4', CONFIG.SAFE_HAVENS.has(4));
-        this.assert('SAFE_HAVENS has index 9', CONFIG.SAFE_HAVENS.has(9));
-        this.assert('CONFIG is frozen', Object.isFrozen(CONFIG));
+        GeminiService.setKey(_savedKey); // Restore so game still works
         return this.results;
       },
       display() {
