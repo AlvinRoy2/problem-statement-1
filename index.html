@@ -4,7 +4,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://generativelanguage.googleapis.com; img-src 'self' data:;">
+  
+  <!-- Primary Meta Tags -->
   <title>Millionaire 2026</title>
+  <meta name="title" content="Millionaire 2026 - AI-Powered Quiz Game">
+  <meta name="description" content="A high-stakes, AI-enhanced reimagining of the classic Who Wants to Be a Millionaire? Built with Gemini AI for the ultimate quiz experience.">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yourdomain.com/">
+  <meta property="og:title" content="Millionaire 2026 - AI-Powered Quiz Game">
+  <meta property="og:description" content="A high-stakes, AI-enhanced reimagining of the classic Who Wants to Be a Millionaire? Built with Gemini AI for the ultimate quiz experience.">
+  <meta property="og:image" content="logo.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://yourdomain.com/">
+  <meta property="twitter:title" content="Millionaire 2026 - AI-Powered Quiz Game">
+  <meta property="twitter:description" content="A high-stakes, AI-enhanced reimagining of the classic Who Wants to Be a Millionaire? Built with Gemini AI for the ultimate quiz experience.">
+  <meta property="twitter:image" content="logo.png">
+
+  <!-- Favicon & PWA -->
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#D4AF37">
+
   <!-- Google Fonts — Cinzel + Rajdhani -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1174,7 +1199,16 @@ REQUIREMENTS:
       }
     };
 
-    document.addEventListener('DOMContentLoaded', () => GameController.init());
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('SW Registered'))
+          .catch(err => console.log('SW Failed', err));
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => GameController.init());
   </script>
 </body>
 </html>

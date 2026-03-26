@@ -1,0 +1,17 @@
+{
+  "name": "Millionaire 2026",
+  "short_name": "Millionaire",
+  "description": "A high-stakes, AI-enhanced reimagining of the classic Who Wants to Be a Millionaire?",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#050A18",
+  "theme_color": "#D4AF37",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
