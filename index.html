@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://generativelanguage.googleapis.com; img-src 'self' data:;">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Permissions-Policy" content="accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()">
   
   <!-- Primary Meta Tags -->
   <title>Millionaire 2026</title>
@@ -29,6 +31,10 @@
   <link rel="apple-touch-icon" href="logo.png">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#D4AF37">
+
+  <!-- Preload Critical Fonts -->
+  <link rel="preload" href="https://fonts.gstatic.com/s/cinzel/v11/n74QI28L8WzDOXWbPT72nS8.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="https://fonts.gstatic.com/s/rajdhani/v10/LGo_atp7Ym_250854-p4m_lZ.woff2" as="font" type="font/woff2" crossorigin>
 
   <!-- Google Fonts — Cinzel + Rajdhani -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -336,58 +342,58 @@ h1, h2, h3, .cinzel { font-family: 'Cinzel', serif; }
     });
 
     const QUESTIONS = [
-  { q: "What does 'www' stand for in a web address?", options: ["World Wide Web","World War Web","Wide World Wire","Web World Wide"], answer: 0, category: "Technology" },
-  { q: "Which planet is closest to the Sun?", options: ["Venus","Earth","Mercury","Mars"], answer: 2, category: "Science" },
-  { q: "How many sides does a hexagon have?", options: ["Five","Six","Seven","Eight"], answer: 1, category: "Maths" },
-  { q: "Which country invented the sport of cricket?", options: ["Australia","India","England","South Africa"], answer: 2, category: "Sport" },
-  { q: "What is the chemical symbol for gold?", options: ["Go","Gd","Au","Ag"], answer: 2, category: "Chemistry" },
-  { q: "The Eiffel Tower is located in which city?", options: ["Rome","Madrid","Berlin","Paris"], answer: 3, category: "Geography" },
-  { q: "Who wrote the novel '1984'?", options: ["Aldous Huxley","George Orwell","Ray Bradbury","Ernest Hemingway"], answer: 1, category: "Literature" },
-  { q: "In which year did the Berlin Wall fall?", options: ["1987","1989","1991","1993"], answer: 1, category: "History" },
-  { q: "What is the approximate speed of light in a vacuum?", options: ["200,000 km/s","300,000 km/s","400,000 km/s","150,000 km/s"], answer: 1, category: "Physics" },
-  { q: "Which element has the atomic number 79?", options: ["Silver","Platinum","Copper","Gold"], answer: 3, category: "Chemistry" },
-  { q: "'The Birth of Venus' was created by which Renaissance artist?", options: ["Leonardo da Vinci","Michelangelo","Sandro Botticelli","Raphael"], answer: 2, category: "Art" },
-  { q: "Who introduced the concept of imaginary numbers?", options: ["Gauss","Euler","Cardano","Descartes"], answer: 2, category: "Maths" },
-  { q: "Heisenberg's Uncertainty Principle limits simultaneous precision of what?", options: ["Speed and charge","Position and momentum","Energy and temperature","Mass and volume"], answer: 1, category: "Physics" },
-  { q: "Which ancient wonder served as a lighthouse?", options: ["Colossus of Rhodes","Temple of Artemis","Lighthouse of Alexandria","Mausoleum at Halicarnassus"], answer: 2, category: "History" },
-  { q: "Fleming discovered penicillin in mold found on what?", options: ["A contaminated petri dish","A bread sample","A pond sample","A patient's wound"], answer: 0, category: "Science" },
-  { q: "What is the capital of Japan?", options: ["Seoul","Beijing","Tokyo","Kyoto"], answer: 2, category: "Geography" },
-  { q: "Which programming language is known as the 'mother of all languages'?", options: ["Java","C","Python","Assembly"], answer: 1, category: "Technology" },
-  { q: "What is the hardest natural substance on Earth?", options: ["Gold","Iron","Diamond","Quartz"], answer: 2, category: "Science" },
-  { q: "Who painted the Mona Lisa?", options: ["Michelangelo","Leonardo da Vinci","Raphael","Donatello"], answer: 1, category: "Art" },
-  { q: "Which planet is known as the Red Planet?", options: ["Venus","Jupiter","Saturn","Mars"], answer: 3, category: "Science" },
-  { q: "What is the largest ocean on Earth?", options: ["Atlantic","Indian","Arctic","Pacific"], answer: 3, category: "Geography" },
-  { q: "What connects muscle to bone?", options: ["Ligament","Cartilage","Tendon","Marrow"], answer: 2, category: "Science" },
-  { q: "Who discovered the neutron?", options: ["Bohr","Chadwick","Rutherford","Thomson"], answer: 1, category: "Physics" },
-  { q: "In which year did the Titanic sink?", options: ["1910","1912","1914","1916"], answer: 1, category: "History" },
-  { q: "What is the smallest bone in the human body?", options: ["Stapes","Incus","Malleus","Femur"], answer: 0, category: "Science" },
-  { q: "Who wrote 'Hamlet'?", options: ["Charles Dickens","William Shakespeare","Jane Austen","Mark Twain"], answer: 1, category: "Literature" },
-  { q: "What is the chemical symbol for sodium?", options: ["So","Na","K","Sn"], answer: 1, category: "Chemistry" },
-  { q: "Which desert is the largest hot desert in the world?", options: ["Gobi","Kalahari","Sahara","Mojave"], answer: 2, category: "Geography" },
-  { q: "Who was the first person to walk on the moon?", options: ["Yuri Gagarin","Buzz Aldrin","Neil Armstrong","Michael Collins"], answer: 2, category: "History" },
-  { q: "What is the square root of 144?", options: ["10","12","14","16"], answer: 1, category: "Maths" },
+  { q: "What does 'www' stand for in a web address?", options: ["World Wide Web","World War Web","Wide World Wire","Web World Wide"], answer: 0, category: "Technology", difficulty: 1 },
+  { q: "Which planet is closest to the Sun?", options: ["Venus","Earth","Mercury","Mars"], answer: 2, category: "Science", difficulty: 1 },
+  { q: "How many sides does a hexagon have?", options: ["Five","Six","Seven","Eight"], answer: 1, category: "Maths", difficulty: 1 },
+  { q: "Which country invented the sport of cricket?", options: ["Australia","India","England","South Africa"], answer: 2, category: "Sport", difficulty: 1 },
+  { q: "What is the chemical symbol for gold?", options: ["Go","Gd","Au","Ag"], answer: 2, category: "Chemistry", difficulty: 2 },
+  { q: "The Eiffel Tower is located in which city?", options: ["Rome","Madrid","Berlin","Paris"], answer: 3, category: "Geography", difficulty: 2 },
+  { q: "Who wrote the novel '1984'?", options: ["Aldous Huxley","George Orwell","Ray Bradbury","Ernest Hemingway"], answer: 1, category: "Literature", difficulty: 3 },
+  { q: "In which year did the Berlin Wall fall?", options: ["1987","1989","1991","1993"], answer: 1, category: "History", difficulty: 3 },
+  { q: "What is the approximate speed of light in a vacuum?", options: ["200,000 km/s","300,000 km/s","400,000 km/s","150,000 km/s"], answer: 1, category: "Physics", difficulty: 4 },
+  { q: "Which element has the atomic number 79?", options: ["Silver","Platinum","Copper","Gold"], answer: 3, category: "Chemistry", difficulty: 4 },
+  { q: "'The Birth of Venus' was created by which Renaissance artist?", options: ["Leonardo da Vinci","Michelangelo","Sandro Botticelli","Raphael"], answer: 2, category: "Art", difficulty: 5 },
+  { q: "Who introduced the concept of imaginary numbers?", options: ["Gauss","Euler","Cardano","Descartes"], answer: 2, category: "Maths", difficulty: 6 },
+  { q: "Heisenberg's Uncertainty Principle limits simultaneous precision of what?", options: ["Speed and charge","Position and momentum","Energy and temperature","Mass and volume"], answer: 1, category: "Physics", difficulty: 11 },
+  { q: "Which ancient wonder served as a lighthouse?", options: ["Colossus of Rhodes","Temple of Artemis","Lighthouse of Alexandria","Mausoleum at Halicarnassus"], answer: 2, category: "History", difficulty: 7 },
+  { q: "Fleming discovered penicillin in mold found on what?", options: ["A contaminated petri dish","A bread sample","A pond sample","A patient's wound"], answer: 0, category: "Science", difficulty: 8 },
+  { q: "What is the capital of Japan?", options: ["Seoul","Beijing","Tokyo","Kyoto"], answer: 2, category: "Geography", difficulty: 1 },
+  { q: "Which programming language is known as the 'mother of all languages'?", options: ["Java","C","Python","Assembly"], answer: 1, category: "Technology", difficulty: 3 },
+  { q: "What is the hardest natural substance on Earth?", options: ["Gold","Iron","Diamond","Quartz"], answer: 2, category: "Science", difficulty: 2 },
+  { q: "Who painted the Mona Lisa?", options: ["Michelangelo","Leonardo da Vinci","Raphael","Donatello"], answer: 1, category: "Art", difficulty: 2 },
+  { q: "Which planet is known as the Red Planet?", options: ["Venus","Jupiter","Saturn","Mars"], answer: 3, category: "Science", difficulty: 1 },
+  { q: "What is the largest ocean on Earth?", options: ["Atlantic","Indian","Arctic","Pacific"], answer: 3, category: "Geography", difficulty: 1 },
+  { q: "What connects muscle to bone?", options: ["Ligament","Cartilage","Tendon","Marrow"], answer: 2, category: "Science", difficulty: 4 },
+  { q: "Who discovered the neutron?", options: ["Bohr","Chadwick","Rutherford","Thomson"], answer: 1, category: "Physics", difficulty: 10 },
+  { q: "In which year did the Titanic sink?", options: ["1910","1912","1914","1916"], answer: 1, category: "History", difficulty: 5 },
+  { q: "What is the smallest bone in the human body?", options: ["Stapes","Incus","Malleus","Femur"], answer: 0, category: "Science", difficulty: 9 },
+  { q: "Who wrote 'Hamlet'?", options: ["Charles Dickens","William Shakespeare","Jane Austen","Mark Twain"], answer: 1, category: "Literature", difficulty: 1 },
+  { q: "What is the chemical symbol for sodium?", options: ["So","Na","K","Sn"], answer: 1, category: "Chemistry", difficulty: 3 },
+  { q: "Which desert is the largest hot desert in the world?", options: ["Gobi","Kalahari","Sahara","Mojave"], answer: 2, category: "Geography", difficulty: 2 },
+  { q: "Who was the first person to walk on the moon?", options: ["Yuri Gagarin","Buzz Aldrin","Neil Armstrong","Michael Collins"], answer: 2, category: "History", difficulty: 1 },
+  { q: "What is the square root of 144?", options: ["10","12","14","16"], answer: 1, category: "Maths", difficulty: 1 },
 
   // NEW QUESTIONS (31–50)
-  { q: "What gas do plants absorb from the atmosphere?", options: ["Oxygen","Nitrogen","Carbon Dioxide","Hydrogen"], answer: 2, category: "Science" },
-  { q: "Which is the longest river in the world?", options: ["Amazon","Nile","Yangtze","Mississippi"], answer: 1, category: "Geography" },
-  { q: "Who is known as the father of computers?", options: ["Alan Turing","Charles Babbage","Bill Gates","Steve Jobs"], answer: 1, category: "Technology" },
-  { q: "What is 7 squared?", options: ["42","48","49","56"], answer: 2, category: "Maths" },
-  { q: "Which metal is liquid at room temperature?", options: ["Iron","Mercury","Aluminum","Copper"], answer: 1, category: "Chemistry" },
-  { q: "Who discovered gravity?", options: ["Einstein","Newton","Galileo","Kepler"], answer: 1, category: "Physics" },
-  { q: "Which country is known as the Land of the Rising Sun?", options: ["China","Japan","Thailand","Korea"], answer: 1, category: "Geography" },
-  { q: "What is the capital of Canada?", options: ["Toronto","Vancouver","Ottawa","Montreal"], answer: 2, category: "Geography" },
-  { q: "Which organ pumps blood through the body?", options: ["Lungs","Brain","Heart","Liver"], answer: 2, category: "Science" },
-  { q: "Which programming language is primarily used for web styling?", options: ["HTML","CSS","JavaScript","Python"], answer: 1, category: "Technology" },
-  { q: "What is the boiling point of water (in Celsius)?", options: ["90","95","100","105"], answer: 2, category: "Science" },
-  { q: "Who painted the ceiling of the Sistine Chapel?", options: ["Leonardo","Michelangelo","Raphael","Donatello"], answer: 1, category: "Art" },
-  { q: "Which number is a prime number?", options: ["9","15","17","21"], answer: 2, category: "Maths" },
-  { q: "Which planet has the most moons?", options: ["Earth","Mars","Jupiter","Venus"], answer: 2, category: "Science" },
-  { q: "What does CPU stand for?", options: ["Central Process Unit","Central Processing Unit","Computer Personal Unit","Central Performance Unit"], answer: 1, category: "Technology" },
-  { q: "Which is the smallest prime number?", options: ["0","1","2","3"], answer: 2, category: "Maths" },
-  { q: "Who wrote 'Pride and Prejudice'?", options: ["Jane Austen","Emily Brontë","Charles Dickens","Virginia Woolf"], answer: 0, category: "Literature" },
-  { q: "Which vitamin is produced when exposed to sunlight?", options: ["Vitamin A","Vitamin B12","Vitamin C","Vitamin D"], answer: 3, category: "Science" },
-  { q: "Which country hosted the 2016 Summer Olympics?", options: ["China","UK","Brazil","Japan"], answer: 2, category: "Sport" },
-  { q: "What is the SI unit of force?", options: ["Joule","Pascal","Newton","Watt"], answer: 2, category: "Physics" }
+  { q: "What gas do plants absorb from the atmosphere?", options: ["Oxygen","Nitrogen","Carbon Dioxide","Hydrogen"], answer: 2, category: "Science", difficulty: 1 },
+  { q: "Which is the longest river in the world?", options: ["Amazon","Nile","Yangtze","Mississippi"], answer: 1, category: "Geography", difficulty: 3 },
+  { q: "Who is known as the father of computers?", options: ["Alan Turing","Charles Babbage","Bill Gates","Steve Jobs"], answer: 1, category: "Technology", difficulty: 2 },
+  { q: "What is 7 squared?", options: ["42","48","49","56"], answer: 2, category: "Maths", difficulty: 1 },
+  { q: "Which metal is liquid at room temperature?", options: ["Iron","Mercury","Aluminum","Copper"], answer: 1, category: "Chemistry", difficulty: 4 },
+  { q: "Who discovered gravity?", options: ["Einstein","Newton","Galileo","Kepler"], answer: 1, category: "Physics", difficulty: 1 },
+  { q: "Which country is known as the Land of the Rising Sun?", options: ["China","Japan","Thailand","Korea"], answer: 1, category: "Geography", difficulty: 1 },
+  { q: "What is the capital of Canada?", options: ["Toronto","Vancouver","Ottawa","Montreal"], answer: 2, category: "Geography", difficulty: 4 },
+  { q: "Which organ pumps blood through the body?", options: ["Lungs","Brain","Heart","Liver"], answer: 2, category: "Science", difficulty: 1 },
+  { q: "Which programming language is primarily used for web styling?", options: ["HTML","CSS","JavaScript","Python"], answer: 1, category: "Technology", difficulty: 1 },
+  { q: "What is the boiling point of water (in Celsius)?", options: ["90","95","100","105"], answer: 2, category: "Science", difficulty: 2 },
+  { q: "Who painted the ceiling of the Sistine Chapel?", options: ["Leonardo","Michelangelo","Raphael","Donatello"], answer: 1, category: "Art", difficulty: 7 },
+  { q: "Which number is a prime number?", options: ["9","15","17","21"], answer: 2, category: "Maths", difficulty: 5 },
+  { q: "Which planet has the most moons?", options: ["Earth","Mars","Jupiter","Venus"], answer: 2, category: "Science", difficulty: 8 },
+  { q: "What does CPU stand for?", options: ["Central Process Unit","Central Processing Unit","Computer Personal Unit","Central Performance Unit"], answer: 1, category: "Technology", difficulty: 2 },
+  { q: "Which is the smallest prime number?", options: ["0","1","2","3"], answer: 2, category: "Maths", difficulty: 2 },
+  { q: "Who wrote 'Pride and Prejudice'?", options: ["Jane Austen","Emily Brontë","Charles Dickens","Virginia Woolf"], answer: 0, category: "Literature", difficulty: 4 },
+  { q: "Which vitamin is produced when exposed to sunlight?", options: ["Vitamin A","Vitamin B12","Vitamin C","Vitamin D"], answer: 3, category: "Science", difficulty: 2 },
+  { q: "Which country hosted the 2016 Summer Olympics?", options: ["China","UK","Brazil","Japan"], answer: 2, category: "Sport", difficulty: 3 },
+  { q: "What is the SI unit of force?", options: ["Joule","Pascal","Newton","Watt"], answer: 2, category: "Physics", difficulty: 6 }
 ];
 
 /* JS_LOGIC */
@@ -863,9 +869,20 @@ REQUIREMENTS:
           console.warn(`Question bank has only ${QUESTIONS.length} items but ladder needs ${totalNeeded}.`);
         }
         
-        const shuffled = GameLogic.shuffle([...QUESTIONS]);
-        this.questions = shuffled.slice(0, totalNeeded); 
-        
+        this.questions = [];
+        for (let i = 1; i <= totalNeeded; i++) {
+          let pool = QUESTIONS.filter(q => q.difficulty === i);
+          if (pool.length === 0) {
+            // Fallback: pick closest difficulty or random
+            pool = QUESTIONS.filter(q => q.difficulty >= i - 1 && q.difficulty <= i + 1);
+          }
+          if (pool.length === 0) pool = QUESTIONS;
+          
+          const available = pool.filter(q => !this.questions.includes(q));
+          const finalPool = available.length > 0 ? available : pool;
+          const choice = finalPool[Math.floor(Math.random() * finalPool.length)];
+          this.questions.push(choice);
+        }        
         this.llUsed = { fifty: false, debate: false, switch: false }; 
         this.inProgress = true; 
         this.waitingNext = false; 
